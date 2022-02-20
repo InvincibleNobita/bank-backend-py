@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from dotenv import load_dotenv
 import pymongo
-#from bson.objectid import ObjectId
+from bson.objectid import ObjectId
 #from models.bank import BankTransactionDetail
 #from schemas.bank import serializeDict, serializeList
 
@@ -44,16 +44,19 @@ def get_balance(date):
     data = list(db.banktransactiondetails.find({ "Date": rd}))
     for i in data:
         i["_id"] = str(i["_id"])
-    balance=data[-1]["Balance AMT"]
+    if(data):
+        balance=data[-1]["Balance AMT"]
+    else:
+        balance = "No transactions on that day"
     print(balance)
     return json.dumps(balance)
 
 @app.route('/details/<id>')
 def get_details(id):
-    print(id)
-    data = list(db.banktransactiondetails.find_one(id))
-    for i in data:
-        i["_id"] = str(i["_id"])
+    objInstance = ObjectId(id)
+    data = db.banktransactiondetails.find_one({"_id" : objInstance})
+    print(data)
+    data["_id"] = str(data["_id"])
     return json.dumps(data)
 
 if __name__=="__main__":

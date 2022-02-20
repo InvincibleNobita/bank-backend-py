@@ -3,3 +3,4 @@ bankAccountDetail.json
 .env
 models
 schemas
+__pycache__
